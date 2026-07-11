@@ -326,6 +326,12 @@ body {
   color: var(--text-primary);
   font-weight: 500;
   cursor: pointer;
+  min-width: 100px;
+}
+
+.currency-selector select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 
 .date-display {
@@ -727,158 +733,6 @@ body {
   gap: 0.5rem;
   transition: all var(--transition-fast);
 }
-
-/* ================= BILL SUMMARY MODAL ================= */
-.bill-summary-modal {
-    max-width: 480px;
-}
-
-.bill-summary-content {
-    padding: 0.5rem;
-}
-
-.bill-summary-device {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    background: var(--bg-hover);
-    border-radius: var(--radius-lg);
-    margin-bottom: 1.5rem;
-}
-
-.device-icon-large {
-    width: 64px;
-    height: 64px;
-    border-radius: var(--radius-md);
-    background: var(--primary-light);
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-}
-
-.bill-summary-device h2 {
-    font-size: 1.3rem;
-    margin: 0;
-    color: var(--text-primary);
-}
-
-.device-type-text {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    margin: 0;
-}
-
-.bill-summary-details {
-    background: var(--bg-hover);
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.summary-row:last-child {
-    border-bottom: none;
-}
-
-.summary-row.highlight {
-    background: var(--primary-light);
-    margin: 0 -1.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius-md);
-    border-bottom: none;
-}
-
-.summary-label {
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.summary-label i {
-    color: var(--primary);
-    width: 20px;
-}
-
-.summary-value {
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.summary-value.amount {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.bill-summary-actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.bill-action-btn {
-    flex: 1;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: all var(--transition-fast);
-}
-
-.btn-warning {
-    background: var(--warning);
-    color: white;
-}
-
-.btn-warning:hover {
-    background: #d97706;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-.bill-summary-note {
-    text-align: center;
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    margin-top: 1rem;
-    font-style: italic;
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-    .bill-summary-device {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .bill-summary-actions {
-        flex-direction: column;
-    }
-    
-    .summary-row.highlight {
-        margin: 0 -0.5rem;
-        padding: 0.75rem 0.5rem;
-    }
-}
-
 
 /* ================= BILLS ================= */
 .bills-container {
@@ -1331,7 +1185,7 @@ body {
   font-size: 0.95rem;
   font-family: 'Poppins', sans-serif;
   transition: all var(--transition-normal);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-card);
   color: var(--text-primary);
 }
 
@@ -1342,11 +1196,177 @@ body {
   box-shadow: 0 0 0 3px rgba(108, 43, 217, 0.1);
 }
 
+.form-group input::placeholder {
+  color: var(--text-light);
+}
+
 .form-hint {
   display: block;
   margin-top: 0.25rem;
   font-size: 0.75rem;
   color: var(--text-secondary);
+}
+
+/* ================= DROPDOWN FIXES ================= */
+/* Fix for select dropdowns - ensures dark theme compatibility */
+.form-group select {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  cursor: pointer;
+}
+
+/* Style for dropdown options */
+.form-group select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border: none;
+}
+
+/* For dark theme specifically */
+[data-theme="dark"] .form-group select {
+  background: #1e293b;
+  color: #f1f5f9;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .form-group select option {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .form-group select option:hover {
+  background: #334155;
+}
+
+[data-theme="light"] .form-group select {
+  background: #ffffff;
+  color: #1a1a2e;
+  border-color: #d0d0e0;
+}
+
+[data-theme="light"] .form-group select option {
+  background: #ffffff;
+  color: #1a1a2e;
+}
+
+/* Fix for currency selector dropdown */
+.currency-selector select {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 100px;
+}
+
+.currency-selector select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .currency-selector select {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .currency-selector select option {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
+[data-theme="light"] .currency-selector select {
+  background: #ffffff;
+  color: #1a1a2e;
+}
+
+[data-theme="light"] .currency-selector select option {
+  background: #ffffff;
+  color: #1a1a2e;
+}
+
+/* Ensure all select elements use correct colors */
+select {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+select option {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] select {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] select option {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] select option:hover,
+[data-theme="dark"] select option:focus,
+[data-theme="dark"] select option:active {
+  background: #334155 !important;
+}
+
+[data-theme="light"] select {
+  background: #ffffff !important;
+  color: #1a1a2e !important;
+}
+
+[data-theme="light"] select option {
+  background: #ffffff !important;
+  color: #1a1a2e !important;
+}
+
+[data-theme="light"] select option:hover,
+[data-theme="light"] select option:focus,
+[data-theme="light"] select option:active {
+  background: #f0f0f8 !important;
+}
+
+/* Fix for select dropdown arrow in dark mode */
+[data-theme="dark"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a0a0c0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+[data-theme="light"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a4a6a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+/* Ensure modal selects also use correct colors */
+.modal select {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+.modal select option {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .modal select {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .modal select option {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
 }
 
 /* ================= PROFILE ================= */
@@ -1419,38 +1439,14 @@ body {
   font-weight: 500;
 }
 
-/* ================= MESSAGE ================= */
-.message {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 12px 18px;
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  display: none;
-  z-index: 9999;
-  animation: slideIn 0.3s ease;
-}
-
-.message.success {
-  background: var(--success-light);
-  color: var(--success);
-  border: 1px solid var(--success);
-}
-
-.message.error {
-  background: var(--danger-light);
-  color: var(--danger);
-  border: 1px solid var(--danger);
-}
-
-/* ================= NOTIFICATION ================= */
+/* ================= NOTIFICATION FIXES FOR DARK MODE ================= */
+/* Fix notification backgrounds for dark mode */
 .notification {
   position: fixed;
   top: 20px;
   right: 20px;
   padding: 0.75rem 1.25rem;
-  border-radius: var(--radius-md);
+  border-radius: 8px;
   background: var(--bg-card);
   box-shadow: var(--shadow-lg);
   display: flex;
@@ -1464,36 +1460,374 @@ body {
   border-left: 4px solid var(--primary);
   font-size: 0.875rem;
   border: 1px solid var(--border-color);
+  color: var(--text-primary);
 }
 
-.notification.show {
-  transform: translateX(0);
+[data-theme="dark"] .notification {
+  background: #1e293b;
+  color: #f1f5f9;
+  border: 1px solid #334155;
 }
 
-.notification-success {
-  border-left-color: var(--success);
+[data-theme="light"] .notification {
+  background: #ffffff;
+  color: #1a1a2e;
+  border: 1px solid #d0d0e0;
 }
 
-.notification-error {
-  border-left-color: var(--danger);
+/* Notification types - Dark Mode */
+[data-theme="dark"] .notification-success {
+  border-left-color: #34d399;
+  background: #064e3b;
+  color: #d1fae5;
 }
 
-.notification-info {
-  border-left-color: var(--info);
+[data-theme="dark"] .notification-success i {
+  color: #34d399;
 }
 
-.notification-warning {
-  border-left-color: var(--warning);
+[data-theme="dark"] .notification-error {
+  border-left-color: #f87171;
+  background: #7f1d1d;
+  color: #fecaca;
 }
 
-/* ================= BADGE ================= */
-.badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
+[data-theme="dark"] .notification-error i {
+  color: #f87171;
+}
+
+[data-theme="dark"] .notification-info {
+  border-left-color: #60a5fa;
+  background: #1e3a5f;
+  color: #bfdbfe;
+}
+
+[data-theme="dark"] .notification-info i {
+  color: #60a5fa;
+}
+
+[data-theme="dark"] .notification-warning {
+  border-left-color: #fbbf24;
+  background: #78350f;
+  color: #fef3c7;
+}
+
+[data-theme="dark"] .notification-warning i {
+  color: #fbbf24;
+}
+
+/* Notification types - Light Mode */
+[data-theme="light"] .notification-success {
+  border-left-color: #10b981;
+  background: #d1fae5;
+  color: #065f46;
+}
+
+[data-theme="light"] .notification-success i {
+  color: #10b981;
+}
+
+[data-theme="light"] .notification-error {
+  border-left-color: #ef4444;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+[data-theme="light"] .notification-error i {
+  color: #ef4444;
+}
+
+[data-theme="light"] .notification-info {
+  border-left-color: #3b82f6;
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+[data-theme="light"] .notification-info i {
+  color: #3b82f6;
+}
+
+[data-theme="light"] .notification-warning {
+  border-left-color: #f59e0b;
+  background: #fef3c7;
+  color: #92400e;
+}
+
+[data-theme="light"] .notification-warning i {
+  color: #f59e0b;
+}
+
+/* ================= GLOBAL MESSAGE FIXES ================= */
+.message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
   font-weight: 500;
+  display: none;
+  z-index: 9999;
+  animation: slideIn 0.3s ease;
+  max-width: 400px;
+}
+
+[data-theme="dark"] .message {
+  background: #1e293b;
+  color: #f1f5f9;
+  border: 1px solid #334155;
+}
+
+[data-theme="light"] .message {
+  background: #ffffff;
+  color: #1a1a2e;
+  border: 1px solid #d0d0e0;
+}
+
+[data-theme="dark"] .message.success {
+  background: #064e3b;
+  color: #d1fae5;
+  border: 1px solid #34d399;
+}
+
+[data-theme="dark"] .message.error {
+  background: #7f1d1d;
+  color: #fecaca;
+  border: 1px solid #f87171;
+}
+
+[data-theme="dark"] .message.warning {
+  background: #78350f;
+  color: #fef3c7;
+  border: 1px solid #fbbf24;
+}
+
+[data-theme="light"] .message.success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+[data-theme="light"] .message.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+[data-theme="light"] .message.warning {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
+/* ================= BILL SUMMARY MODAL ================= */
+.bill-summary-modal {
+  max-width: 480px;
+}
+
+.bill-summary-content {
+  padding: 0.5rem;
+}
+
+.bill-summary-device {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
   background: var(--bg-hover);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+}
+
+.device-icon-large {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.bill-summary-device h2 {
+  font-size: 1.3rem;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.device-type-text {
   color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.bill-summary-details {
+  background: var(--bg-hover);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-row.highlight {
+  background: var(--primary-light);
+  margin: 0 -1.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  border-bottom: none;
+}
+
+.summary-label {
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.summary-label i {
+  color: var(--primary);
+  width: 20px;
+}
+
+.summary-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.summary-value.amount {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.bill-summary-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.bill-action-btn {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-warning {
+  background: var(--warning);
+  color: white;
+}
+
+.btn-warning:hover {
+  background: #d97706;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.bill-summary-note {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+/* ================= BILL SUMMARY DARK MODE FIXES ================= */
+[data-theme="dark"] .bill-summary-modal .modal-content {
+  background: #1e293b;
+  border: 1px solid #334155;
+}
+
+[data-theme="dark"] .bill-summary-device {
+  background: #0f172a;
+}
+
+[data-theme="dark"] .bill-summary-details {
+  background: #0f172a;
+}
+
+[data-theme="dark"] .summary-row {
+  border-bottom-color: #334155;
+}
+
+[data-theme="dark"] .summary-row.highlight {
+  background: rgba(108, 43, 217, 0.2);
+}
+
+[data-theme="dark"] .summary-label {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .summary-value {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .summary-value.amount {
+  color: #8b5cf6;
+}
+
+[data-theme="light"] .bill-summary-device {
+  background: #f0f0f8;
+}
+
+[data-theme="light"] .bill-summary-details {
+  background: #f0f0f8;
+}
+
+[data-theme="light"] .summary-row.highlight {
+  background: rgba(108, 43, 217, 0.1);
+}
+
+/* ================= SCROLLBAR ================= */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-hover);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
 
 /* ================= RESPONSIVE ================= */
@@ -1575,6 +1909,20 @@ body {
   .actions-grid .btn-danger {
     min-width: 100%;
   }
+  
+  .bill-summary-device {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .bill-summary-actions {
+    flex-direction: column;
+  }
+  
+  .summary-row.highlight {
+    margin: 0 -0.5rem;
+    padding: 0.75rem 0.5rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1615,21 +1963,12 @@ body {
   }
 }
 
-/* ================= SCROLLBAR ================= */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
+/* ================= BADGE ================= */
+.badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
   background: var(--bg-hover);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 9999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  color: var(--text-secondary);
 }
