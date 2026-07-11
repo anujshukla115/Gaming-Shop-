@@ -1,7 +1,9 @@
 // API Configuration
-const API_URL = 'https://finflow-expense-tracker-backend.vercel.app//api';
+// ================= USE YOUR LIVE BACKEND =================
+// Your backend is already live on Railway - use this URL
+const API_URL = 'https://finflow-expense-tracker-backend-production.up.railway.app/api';
 
-// For local development, use:
+// For local development, uncomment this:
 // const API_URL = window.location.hostname === 'localhost' || 
 //                 window.location.hostname === '127.0.0.1'
 //                 ? 'http://localhost:5000/api'
@@ -53,6 +55,8 @@ function showMessage(message, type = 'success') {
     icon.className = 'fas fa-exclamation-circle';
   } else if (type === 'warning') {
     icon.className = 'fas fa-exclamation-triangle';
+  } else if (type === 'info') {
+    icon.className = 'fas fa-info-circle';
   }
   
   // Auto hide after 5 seconds
@@ -66,15 +70,29 @@ function hideMessage() {
   alert.classList.add('hidden');
 }
 
-// Test backend connection
+// Test backend connection with more detailed logging
 async function testBackend() {
   try {
+    console.log('Testing backend connection to:', API_URL);
     const response = await fetch(`${API_URL}/health`, {
-      mode: 'cors'
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/json'
+      }
     });
-    return response.ok;
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log('✅ Backend connected successfully:', data);
+      return true;
+    } else {
+      console.warn('⚠️ Backend responded with status:', response.status);
+      return false;
+    }
   } catch (error) {
-    console.error('Backend test failed:', error);
+    console.error('❌ Backend connection failed:', error);
+    console.log('Make sure your backend is running at:', API_URL);
     return false;
   }
 }
@@ -93,19 +111,15 @@ async function handleLogin(event) {
     return;
   }
   
-  // Test backend connection first
-  const backendAvailable = await testBackend();
-  if (!backendAvailable) {
-    showMessage('Cannot connect to server. Please check if backend is running.', 'error');
-    return;
-  }
-  
   // Show loading state
   loginBtn.classList.add('loading');
   loginBtn.disabled = true;
   loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
   
   try {
+    console.log('Attempting login for:', email);
+    console.log('API URL:', API_URL);
+    
     const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: {
@@ -117,6 +131,7 @@ async function handleLogin(event) {
     });
     
     const data = await response.json();
+    console.log('Login response:', data);
     
     if (data.success) {
       // Store token
@@ -135,9 +150,9 @@ async function handleLogin(event) {
   } catch (error) {
     console.error('Login error:', error);
     if (error.message.includes('Failed to fetch') || error.message.includes('Network')) {
-      showMessage('Unable to connect to server. Please check your internet connection.', 'error');
+      showMessage(`Unable to connect to server at ${API_URL}. Please check your internet connection.`, 'error');
     } else {
-      showMessage('An unexpected error occurred. Please try again.', 'error');
+      showMessage('An unexpected error occurred: ' + error.message, 'error');
     }
   } finally {
     loginBtn.classList.remove('loading');
@@ -172,19 +187,15 @@ async function handleSignup(event) {
     return;
   }
   
-  // Test backend connection first
-  const backendAvailable = await testBackend();
-  if (!backendAvailable) {
-    showMessage('Cannot connect to server. Please check if backend is running.', 'error');
-    return;
-  }
-  
   // Show loading state
   signupBtn.classList.add('loading');
   signupBtn.disabled = true;
   signupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
   
   try {
+    console.log('Attempting signup for:', email);
+    console.log('API URL:', API_URL);
+    
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: {
@@ -196,6 +207,7 @@ async function handleSignup(event) {
     });
     
     const data = await response.json();
+    console.log('Signup response:', data);
     
     if (data.success) {
       // Store token
@@ -214,9 +226,9 @@ async function handleSignup(event) {
   } catch (error) {
     console.error('Signup error:', error);
     if (error.message.includes('Failed to fetch') || error.message.includes('Network')) {
-      showMessage('Unable to connect to server. Please check your internet connection.', 'error');
+      showMessage(`Unable to connect to server at ${API_URL}. Please check your internet connection.`, 'error');
     } else {
-      showMessage('An unexpected error occurred. Please try again.', 'error');
+      showMessage('An unexpected error occurred: ' + error.message, 'error');
     }
   } finally {
     signupBtn.classList.remove('loading');
@@ -227,6 +239,19 @@ async function handleSignup(event) {
 
 // Check if already logged in
 window.addEventListener('DOMContentLoaded', async () => {
+  console.log('Auth page loaded');
+  console.log('API URL:', API_URL);
+  console.log('Environment:', window.location.hostname === 'localhost' ? 'Development' : 'Production');
+  
+  // Test backend connection on page load
+  const isConnected = await testBackend();
+  if (!isConnected) {
+    showMessage(`⚠️ Cannot connect to backend at ${API_URL}. Please check your internet connection.`, 'error');
+  } else {
+    // Only show this if backend is connected
+    console.log('✅ Backend is live and reachable!');
+  }
+  
   const token = localStorage.getItem('token');
   if (token) {
     try {
@@ -251,9 +276,4 @@ window.addEventListener('DOMContentLoaded', async () => {
       // Keep on login page if validation fails
     }
   }
-  
-  // Display API URL in console for debugging
-  console.log('Auth page loaded');
-  console.log('API URL:', API_URL);
-  console.log('Environment:', window.location.hostname === 'localhost' ? 'Development' : 'Production');
 });
