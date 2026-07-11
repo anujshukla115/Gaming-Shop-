@@ -1,6 +1,6 @@
 // ================= GAMING SHOP MANAGER SCRIPT =================
-// API Configuration
-const API_URL = 'https://finflow-expense-tracker-backend-production.up.railway.app/api';
+// API Configuration - USE YOUR GAMING SHOP BACKEND
+const API_URL = 'https://gaming-shop-monitoring-backend-three.vercel.app/api';
 
 let authToken = localStorage.getItem('token') || null;
 let currentUser = null;
@@ -9,7 +9,6 @@ let monthlyIncome = 0;
 
 // Data storage
 let devices = [];
-let sessions = [];
 let bills = [];
 let shopExpenses = [];
 let currentSessionTimers = {};
@@ -92,7 +91,7 @@ async function apiRequest(endpoint, options = {}) {
 }
 
 /* ======================
-   DATA LOADING
+   DATA LOADING - FROM API
 ====================== */
 async function loadUserData() {
     try {
@@ -114,32 +113,26 @@ async function loadUserData() {
 
 async function loadDevices() {
     try {
-        // For now, use localStorage
-        const saved = localStorage.getItem('gaming_devices');
-        devices = saved ? JSON.parse(saved) : [];
-        return devices;
+        const data = await apiRequest('/devices');
+        if (data.success) {
+            devices = data.devices;
+            return devices;
+        }
+        return [];
     } catch (error) {
         console.error('Error loading devices:', error);
         return [];
     }
 }
 
-async function loadSessions() {
-    try {
-        const saved = localStorage.getItem('gaming_sessions');
-        sessions = saved ? JSON.parse(saved) : [];
-        return sessions;
-    } catch (error) {
-        console.error('Error loading sessions:', error);
-        return [];
-    }
-}
-
 async function loadBills() {
     try {
-        const saved = localStorage.getItem('gaming_bills');
-        bills = saved ? JSON.parse(saved) : [];
-        return bills;
+        const data = await apiRequest('/gaming-bills');
+        if (data.success) {
+            bills = data.bills;
+            return bills;
+        }
+        return [];
     } catch (error) {
         console.error('Error loading bills:', error);
         return [];
@@ -148,29 +141,104 @@ async function loadBills() {
 
 async function loadShopExpenses() {
     try {
-        const saved = localStorage.getItem('shop_expenses');
-        shopExpenses = saved ? JSON.parse(saved) : [];
-        return shopExpenses;
+        const data = await apiRequest('/shop-expenses');
+        if (data.success) {
+            shopExpenses = data.expenses;
+            return shopExpenses;
+        }
+        return [];
     } catch (error) {
         console.error('Error loading shop expenses:', error);
         return [];
     }
 }
 
-function saveDevices() {
-    localStorage.setItem('gaming_devices', JSON.stringify(devices));
+/* ======================
+   SAVE FUNCTIONS - TO API
+====================== */
+async function saveDevice(device) {
+    try {
+        if (device._id) {
+            // Update existing
+            const data = await apiRequest(`/devices/${device._id}`, {
+                method: 'PUT',
+                body: JSON.stringify(device)
+            });
+            return data;
+        } else {
+            // Create new
+            const data = await apiRequest('/devices', {
+                method: 'POST',
+                body: JSON.stringify(device)
+            });
+            return data;
+        }
+    } catch (error) {
+        console.error('Error saving device:', error);
+        throw error;
+    }
 }
 
-function saveSessions() {
-    localStorage.setItem('gaming_sessions', JSON.stringify(sessions));
+async function saveBill(bill) {
+    try {
+        const data = await apiRequest('/gaming-bills', {
+            method: 'POST',
+            body: JSON.stringify(bill)
+        });
+        return data;
+    } catch (error) {
+        console.error('Error saving bill:', error);
+        throw error;
+    }
 }
 
-function saveBills() {
-    localStorage.setItem('gaming_bills', JSON.stringify(bills));
+async function updateBillStatus(billId) {
+    try {
+        const data = await apiRequest(`/gaming-bills/${billId}/paid`, {
+            method: 'PATCH'
+        });
+        return data;
+    } catch (error) {
+        console.error('Error updating bill:', error);
+        throw error;
+    }
 }
 
-function saveShopExpenses() {
-    localStorage.setItem('shop_expenses', JSON.stringify(shopExpenses));
+async function deleteBillFromAPI(billId) {
+    try {
+        const data = await apiRequest(`/gaming-bills/${billId}`, {
+            method: 'DELETE'
+        });
+        return data;
+    } catch (error) {
+        console.error('Error deleting bill:', error);
+        throw error;
+    }
+}
+
+async function saveShopExpense(expense) {
+    try {
+        const data = await apiRequest('/shop-expenses', {
+            method: 'POST',
+            body: JSON.stringify(expense)
+        });
+        return data;
+    } catch (error) {
+        console.error('Error saving shop expense:', error);
+        throw error;
+    }
+}
+
+async function deleteShopExpenseFromAPI(expenseId) {
+    try {
+        const data = await apiRequest(`/shop-expenses/${expenseId}`, {
+            method: 'DELETE'
+        });
+        return data;
+    } catch (error) {
+        console.error('Error deleting shop expense:', error);
+        throw error;
+    }
 }
 
 /* ======================
@@ -204,10 +272,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('username').innerHTML = `Welcome back, <span class="text-primary">${currentUser.name}</span>`;
     }
     
-    await loadDevices();
-    await loadSessions();
-    await loadBills();
-    await loadShopExpenses();
+    // Load all data from API
+    await Promise.all([
+        loadDevices(),
+        loadBills(),
+        loadShopExpenses()
+    ]);
     
     // Update timers
     updateAllTimers();
@@ -219,6 +289,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('expenseDate').valueAsDate = now;
     
     console.log('GameHub Manager loaded successfully');
+    console.log('Devices:', devices);
+    console.log('Bills:', bills);
+    console.log('Shop Expenses:', shopExpenses);
 });
 
 /* ======================
@@ -444,10 +517,6 @@ function logout() {
     if (confirm('Are you sure you want to logout?')) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        localStorage.removeItem('gaming_devices');
-        localStorage.removeItem('gaming_sessions');
-        localStorage.removeItem('gaming_bills');
-        localStorage.removeItem('shop_expenses');
         window.location.href = 'login.html';
     }
 }
@@ -491,7 +560,7 @@ function closeAddDeviceModal() {
     document.getElementById('addDeviceModal').classList.add('hidden');
 }
 
-function addDevice() {
+async function addDevice() {
     const name = document.getElementById('deviceName').value.trim();
     const type = document.getElementById('deviceType').value;
     const rate = parseFloat(document.getElementById('deviceRate').value);
@@ -501,42 +570,54 @@ function addDevice() {
         return;
     }
 
-    const device = {
-        id: Date.now().toString(),
-        name,
-        type,
-        ratePerHour: rate,
-        createdAt: new Date().toISOString(),
-        isActive: false,
-        sessionStart: null,
-        totalEarning: 0,
-        totalTime: 0
-    };
+    try {
+        const deviceData = {
+            name,
+            type,
+            ratePerHour: rate,
+            isActive: false,
+            totalEarning: 0,
+            totalTime: 0
+        };
 
-    devices.push(device);
-    saveDevices();
-    closeAddDeviceModal();
-    showNotification(`Device "${name}" added successfully!`, 'success');
-    updateAllDisplays();
+        const result = await saveDevice(deviceData);
+        if (result.success) {
+            devices.push(result.device);
+            closeAddDeviceModal();
+            showNotification(`Device "${name}" added successfully!`, 'success');
+            updateAllDisplays();
+        }
+    } catch (error) {
+        showNotification('Failed to add device: ' + error.message, 'error');
+    }
 }
 
-function deleteDevice(id) {
+async function deleteDevice(id) {
     if (!confirm('Are you sure you want to remove this device?')) return;
     
-    const device = devices.find(d => d.id === id);
+    const device = devices.find(d => d._id === id);
     if (device && device.isActive) {
         showNotification('Cannot delete an active device. End the session first.', 'error');
         return;
     }
     
-    devices = devices.filter(d => d.id !== id);
-    saveDevices();
-    showNotification('Device removed successfully', 'success');
-    updateAllDisplays();
+    try {
+        const result = await apiRequest(`/devices/${id}`, {
+            method: 'DELETE'
+        });
+        
+        if (result.success) {
+            devices = devices.filter(d => d._id !== id);
+            showNotification('Device removed successfully', 'success');
+            updateAllDisplays();
+        }
+    } catch (error) {
+        showNotification('Failed to delete device: ' + error.message, 'error');
+    }
 }
 
-function startDeviceSession(id) {
-    const device = devices.find(d => d.id === id);
+async function startDeviceSession(id) {
+    const device = devices.find(d => d._id === id);
     if (!device) return;
     
     if (device.isActive) {
@@ -544,19 +625,24 @@ function startDeviceSession(id) {
         return;
     }
     
-    device.isActive = true;
-    device.sessionStart = new Date().toISOString();
-    
-    // Start timer
-    startTimer(id);
-    
-    saveDevices();
-    showNotification(`Session started on ${device.name}!`, 'success');
-    updateAllDisplays();
+    try {
+        device.isActive = true;
+        device.sessionStart = new Date().toISOString();
+        
+        const result = await saveDevice(device);
+        if (result.success) {
+            Object.assign(device, result.device);
+            startTimer(id);
+            showNotification(`Session started on ${device.name}!`, 'success');
+            updateAllDisplays();
+        }
+    } catch (error) {
+        showNotification('Failed to start session: ' + error.message, 'error');
+    }
 }
 
-function endDeviceSession(id) {
-    const device = devices.find(d => d.id === id);
+async function endDeviceSession(id) {
+    const device = devices.find(d => d._id === id);
     if (!device || !device.isActive) {
         showNotification('Device is not active', 'error');
         return;
@@ -567,40 +653,41 @@ function endDeviceSession(id) {
     const durationMs = endTime - startTime;
     const durationHours = durationMs / (1000 * 60 * 60);
     
-    // Calculate bill (minimum 30 minutes)
     const minHours = Math.max(durationHours, 0.5);
-    const amount = minHours * device.ratePerHour;
+    const amount = Math.round((minHours * device.ratePerHour) * 100) / 100;
     
-    // Create bill
-    const bill = {
-        id: Date.now().toString(),
-        deviceId: device.id,
-        deviceName: device.name,
-        deviceType: device.type,
-        startTime: device.sessionStart,
-        endTime: endTime.toISOString(),
-        duration: durationMs,
-        durationHours: minHours,
-        amount: Math.round(amount * 100) / 100,
-        status: 'pending', // pending or paid
-        createdAt: new Date().toISOString()
-    };
-    
-    bills.push(bill);
-    saveBills();
-    
-    // Update device
-    device.isActive = false;
-    device.sessionStart = null;
-    device.totalEarning += bill.amount;
-    device.totalTime += durationMs;
-    
-    // Stop timer
-    stopTimer(id);
-    
-    saveDevices();
-    showNotification(`Session ended! Bill: ${CURRENCY_SYMBOLS[userCurrency]}${formatCurrency(bill.amount)}`, 'success');
-    updateAllDisplays();
+    try {
+        const billData = {
+            deviceId: device._id,
+            deviceName: device.name,
+            deviceType: device.type,
+            startTime: device.sessionStart,
+            endTime: endTime.toISOString(),
+            duration: durationMs,
+            durationHours: minHours,
+            amount: amount,
+            status: 'pending'
+        };
+        
+        const result = await saveBill(billData);
+        
+        if (result.success) {
+            bills.push(result.bill);
+            
+            device.isActive = false;
+            device.sessionStart = null;
+            device.totalEarning += amount;
+            device.totalTime += durationMs;
+            
+            await saveDevice(device);
+            
+            stopTimer(id);
+            showNotification(`Session ended! Bill: ${CURRENCY_SYMBOLS[userCurrency]}${formatCurrency(amount)}`, 'success');
+            updateAllDisplays();
+        }
+    } catch (error) {
+        showNotification('Failed to end session: ' + error.message, 'error');
+    }
 }
 
 /* ======================
@@ -624,7 +711,7 @@ function stopTimer(deviceId) {
 }
 
 function updateDeviceTimer(deviceId) {
-    const device = devices.find(d => d.id === deviceId);
+    const device = devices.find(d => d._id === deviceId);
     if (!device || !device.isActive) return;
     
     const timerElement = document.getElementById(`timer-${deviceId}`);
@@ -640,7 +727,6 @@ function updateDeviceTimer(deviceId) {
     
     timerElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     
-    // Update current bill
     const durationHours = elapsed / 3600;
     const minHours = Math.max(durationHours, 0.5);
     const currentAmount = minHours * device.ratePerHour;
@@ -654,7 +740,7 @@ function updateDeviceTimer(deviceId) {
 function updateAllTimers() {
     devices.forEach(device => {
         if (device.isActive) {
-            startTimer(device.id);
+            startTimer(device._id);
         }
     });
 }
@@ -686,7 +772,6 @@ function renderDevices() {
         const statusClass = device.isActive ? 'active' : 'inactive';
         const statusText = device.isActive ? 'In Use' : 'Available';
         
-        // Calculate total time
         let totalTimeStr = '0h';
         if (device.totalTime > 0) {
             const totalHours = Math.floor(device.totalTime / (1000 * 60 * 60));
@@ -726,25 +811,25 @@ function renderDevices() {
                     <div class="device-session-info">
                         <div class="timer-display">
                             <i class="fas fa-clock"></i>
-                            <span id="timer-${device.id}">00:00:00</span>
+                            <span id="timer-${device._id}">00:00:00</span>
                         </div>
                         <div class="current-bill">
-                            Current: <span id="current-amount-${device.id}">${CURRENCY_SYMBOLS[userCurrency]}0.00</span>
+                            Current: <span id="current-amount-${device._id}">${CURRENCY_SYMBOLS[userCurrency]}0.00</span>
                         </div>
                     </div>
                 ` : ''}
                 
                 <div class="device-actions">
                     ${device.isActive ? `
-                        <button class="btn-danger" onclick="endDeviceSession('${device.id}')">
+                        <button class="btn-danger" onclick="endDeviceSession('${device._id}')">
                             <i class="fas fa-stop"></i> End Session
                         </button>
                     ` : `
-                        <button class="btn-success" onclick="startDeviceSession('${device.id}')">
+                        <button class="btn-success" onclick="startDeviceSession('${device._id}')">
                             <i class="fas fa-play"></i> Start
                         </button>
                     `}
-                    <button class="btn-icon delete" onclick="deleteDevice('${device.id}')" title="Remove Device">
+                    <button class="btn-icon delete" onclick="deleteDevice('${device._id}')" title="Remove Device">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -784,10 +869,10 @@ function renderBills() {
                 </div>
                 <div class="bill-amount">${CURRENCY_SYMBOLS[userCurrency]}${formatCurrency(bill.amount)}</div>
                 <div class="bill-actions">
-                    <button class="btn-success btn-sm" onclick="markBillPaid('${bill.id}')">
+                    <button class="btn-success btn-sm" onclick="markBillPaid('${bill._id}')">
                         <i class="fas fa-check"></i> Paid
                     </button>
-                    <button class="btn-danger btn-sm" onclick="deleteBill('${bill.id}')">
+                    <button class="btn-danger btn-sm" onclick="deleteBill('${bill._id}')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -817,26 +902,38 @@ function renderBills() {
     }
 }
 
-function markBillPaid(id) {
-    const bill = bills.find(b => b.id === id);
-    if (!bill) return;
-    
-    bill.status = 'paid';
-    saveBills();
-    showNotification('Bill marked as paid!', 'success');
-    renderBills();
-    updateDashboard();
-    updateAnalytics();
+async function markBillPaid(id) {
+    try {
+        const result = await updateBillStatus(id);
+        if (result.success) {
+            const bill = bills.find(b => b._id === id);
+            if (bill) {
+                bill.status = 'paid';
+            }
+            showNotification('Bill marked as paid!', 'success');
+            renderBills();
+            updateDashboard();
+            updateAnalytics();
+        }
+    } catch (error) {
+        showNotification('Failed to mark bill as paid: ' + error.message, 'error');
+    }
 }
 
-function deleteBill(id) {
+async function deleteBill(id) {
     if (!confirm('Delete this bill?')) return;
-    bills = bills.filter(b => b.id !== id);
-    saveBills();
-    showNotification('Bill deleted', 'info');
-    renderBills();
-    updateDashboard();
-    updateAnalytics();
+    try {
+        const result = await deleteBillFromAPI(id);
+        if (result.success) {
+            bills = bills.filter(b => b._id !== id);
+            showNotification('Bill deleted', 'info');
+            renderBills();
+            updateDashboard();
+            updateAnalytics();
+        }
+    } catch (error) {
+        showNotification('Failed to delete bill: ' + error.message, 'error');
+    }
 }
 
 function renderExpenses() {
@@ -878,7 +975,7 @@ function renderExpenses() {
                         <td>${formatDateShort(expense.date)}</td>
                         <td class="text-danger">${CURRENCY_SYMBOLS[userCurrency]}${formatCurrency(expense.amount)}</td>
                         <td>
-                            <button class="btn-icon delete" onclick="deleteExpense('${expense.id}')" title="Delete">
+                            <button class="btn-icon delete" onclick="deleteExpense('${expense._id}')" title="Delete">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>
@@ -889,13 +986,19 @@ function renderExpenses() {
     `;
 }
 
-function deleteExpense(id) {
+async function deleteExpense(id) {
     if (!confirm('Delete this expense?')) return;
-    shopExpenses = shopExpenses.filter(e => e.id !== id);
-    saveShopExpenses();
-    showNotification('Expense deleted', 'info');
-    renderExpenses();
-    updateDashboard();
+    try {
+        const result = await deleteShopExpenseFromAPI(id);
+        if (result.success) {
+            shopExpenses = shopExpenses.filter(e => e._id !== id);
+            showNotification('Expense deleted', 'info');
+            renderExpenses();
+            updateDashboard();
+        }
+    } catch (error) {
+        showNotification('Failed to delete expense: ' + error.message, 'error');
+    }
 }
 
 /* ======================
@@ -913,7 +1016,7 @@ function closeAddExpenseModal() {
     document.getElementById('addExpenseModal').classList.add('hidden');
 }
 
-function addShopExpense() {
+async function addShopExpense() {
     const title = document.getElementById('expenseTitle').value.trim();
     const amount = parseFloat(document.getElementById('expenseAmount').value);
     const category = document.getElementById('expenseCategory').value;
@@ -924,20 +1027,25 @@ function addShopExpense() {
         return;
     }
 
-    const expense = {
-        id: Date.now().toString(),
-        title,
-        amount,
-        category,
-        date
-    };
+    try {
+        const expenseData = {
+            title,
+            amount,
+            category,
+            date
+        };
 
-    shopExpenses.push(expense);
-    saveShopExpenses();
-    closeAddExpenseModal();
-    showNotification('Expense added successfully!', 'success');
-    renderExpenses();
-    updateDashboard();
+        const result = await saveShopExpense(expenseData);
+        if (result.success) {
+            shopExpenses.push(result.expense);
+            closeAddExpenseModal();
+            showNotification('Expense added successfully!', 'success');
+            renderExpenses();
+            updateDashboard();
+        }
+    } catch (error) {
+        showNotification('Failed to add expense: ' + error.message, 'error');
+    }
 }
 
 /* ======================
@@ -1220,7 +1328,7 @@ function updateDeviceUsageChart() {
     
     const deviceStats = {};
     devices.forEach(device => {
-        const deviceBills = bills.filter(b => b.deviceId === device.id && b.status === 'paid');
+        const deviceBills = bills.filter(b => b.deviceId === device._id && b.status === 'paid');
         const totalEarning = deviceBills.reduce((sum, b) => sum + b.amount, 0);
         if (totalEarning > 0) {
             deviceStats[device.name] = totalEarning;
