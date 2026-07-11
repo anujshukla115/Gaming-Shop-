@@ -1,5 +1,5 @@
 // API Configuration
-const API_URL = 'https:///api';
+const API_URL = 'https://https://gaming-shop-monitoring-backend.vercel.app//api';
 
 // For local development, use:
 // const API_URL = window.location.hostname === 'localhost' || 
