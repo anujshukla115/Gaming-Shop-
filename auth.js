@@ -142,7 +142,7 @@ async function handleLogin(event) {
   } finally {
     loginBtn.classList.remove('loading');
     loginBtn.disabled = false;
-    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt btn-icon"></i> Sign In';
   }
 }
 
@@ -221,7 +221,7 @@ async function handleSignup(event) {
   } finally {
     signupBtn.classList.remove('loading');
     signupBtn.disabled = false;
-    signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+    signupBtn.innerHTML = '<i class="fas fa-user-plus btn-icon"></i> Join GameHub';
   }
 }
 
