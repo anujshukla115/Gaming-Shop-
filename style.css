@@ -1619,6 +1619,280 @@ select option {
   border: 1px solid #f59e0b;
 }
 
+/* ================= NOTIFICATION FIXES FOR DARK MODE ================= */
+/* Fix notification backgrounds for dark mode - NO TRANSPARENCY */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transform: translateX(120%);
+  transition: transform 0.3s ease;
+  z-index: 10000;
+  min-width: 280px;
+  max-width: 350px;
+  border-left: 4px solid var(--primary);
+  font-size: 0.875rem;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  background: var(--bg-card) !important;
+  opacity: 1 !important;
+}
+
+.notification.show {
+  transform: translateX(0);
+}
+
+/* Dark Mode - Solid backgrounds with good contrast */
+[data-theme="dark"] .notification {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #334155 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .notification-success {
+  border-left-color: #34d399 !important;
+  background: #065f46 !important;
+  color: #d1fae5 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .notification-success i {
+  color: #34d399 !important;
+}
+
+[data-theme="dark"] .notification-error {
+  border-left-color: #f87171 !important;
+  background: #7f1d1d !important;
+  color: #fecaca !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .notification-error i {
+  color: #f87171 !important;
+}
+
+[data-theme="dark"] .notification-info {
+  border-left-color: #60a5fa !important;
+  background: #1e3a5f !important;
+  color: #bfdbfe !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .notification-info i {
+  color: #60a5fa !important;
+}
+
+[data-theme="dark"] .notification-warning {
+  border-left-color: #fbbf24 !important;
+  background: #78350f !important;
+  color: #fef3c7 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .notification-warning i {
+  color: #fbbf24 !important;
+}
+
+/* Light Mode - Solid backgrounds */
+[data-theme="light"] .notification {
+  background: #ffffff !important;
+  color: #1a1a2e !important;
+  border: 1px solid #d0d0e0 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .notification-success {
+  border-left-color: #10b981 !important;
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .notification-success i {
+  color: #10b981 !important;
+}
+
+[data-theme="light"] .notification-error {
+  border-left-color: #ef4444 !important;
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .notification-error i {
+  color: #ef4444 !important;
+}
+
+[data-theme="light"] .notification-info {
+  border-left-color: #3b82f6 !important;
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .notification-info i {
+  color: #3b82f6 !important;
+}
+
+[data-theme="light"] .notification-warning {
+  border-left-color: #f59e0b !important;
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .notification-warning i {
+  color: #f59e0b !important;
+}
+
+/* ================= GLOBAL MESSAGE FIXES - NO TRANSPARENCY ================= */
+.message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  display: none;
+  z-index: 9999;
+  animation: slideIn 0.3s ease;
+  max-width: 400px;
+  opacity: 1 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .message {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #334155 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .message {
+  background: #ffffff !important;
+  color: #1a1a2e !important;
+  border: 1px solid #d0d0e0 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .message.success {
+  background: #065f46 !important;
+  color: #d1fae5 !important;
+  border: 1px solid #34d399 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .message.error {
+  background: #7f1d1d !important;
+  color: #fecaca !important;
+  border: 1px solid #f87171 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .message.warning {
+  background: #78350f !important;
+  color: #fef3c7 !important;
+  border: 1px solid #fbbf24 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .message.success {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  border: 1px solid #10b981 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .message.error {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1px solid #ef4444 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .message.warning {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border: 1px solid #f59e0b !important;
+  opacity: 1 !important;
+}
+
+/* ================= MESSAGE ALERT IN AUTH PAGE - NO TRANSPARENCY ================= */
+.message-alert {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+  animation: slideDown 0.3s ease-out;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .message-alert {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #334155 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .message-alert {
+  background: #ffffff !important;
+  color: #1a1a2e !important;
+  border: 1px solid #d0d0e0 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .message-alert.success {
+  background: #065f46 !important;
+  color: #d1fae5 !important;
+  border: 1px solid #34d399 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .message-alert.error {
+  background: #7f1d1d !important;
+  color: #fecaca !important;
+  border: 1px solid #f87171 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] .message-alert.warning {
+  background: #78350f !important;
+  color: #fef3c7 !important;
+  border: 1px solid #fbbf24 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .message-alert.success {
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+  border: 1px solid #10b981 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .message-alert.error {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1px solid #ef4444 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .message-alert.warning {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border: 1px solid #f59e0b !important;
+  opacity: 1 !important;
+}
+
 /* ================= BILL SUMMARY MODAL ================= */
 .bill-summary-modal {
   max-width: 480px;
