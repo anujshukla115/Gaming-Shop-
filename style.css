@@ -728,6 +728,158 @@ body {
   transition: all var(--transition-fast);
 }
 
+/* ================= BILL SUMMARY MODAL ================= */
+.bill-summary-modal {
+    max-width: 480px;
+}
+
+.bill-summary-content {
+    padding: 0.5rem;
+}
+
+.bill-summary-device {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg-hover);
+    border-radius: var(--radius-lg);
+    margin-bottom: 1.5rem;
+}
+
+.device-icon-large {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-md);
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.bill-summary-device h2 {
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.device-type-text {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.bill-summary-details {
+    background: var(--bg-hover);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-row.highlight {
+    background: var(--primary-light);
+    margin: 0 -1.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    border-bottom: none;
+}
+
+.summary-label {
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.summary-label i {
+    color: var(--primary);
+    width: 20px;
+}
+
+.summary-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.summary-value.amount {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.bill-summary-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.bill-action-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all var(--transition-fast);
+}
+
+.btn-warning {
+    background: var(--warning);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #d97706;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.bill-summary-note {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .bill-summary-device {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .bill-summary-actions {
+        flex-direction: column;
+    }
+    
+    .summary-row.highlight {
+        margin: 0 -0.5rem;
+        padding: 0.75rem 0.5rem;
+    }
+}
+
+
 /* ================= BILLS ================= */
 .bills-container {
   display: grid;
