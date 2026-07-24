@@ -58,6 +58,90 @@ const DEVICE_COLORS = {
 };
 
 /* ======================
+   MOBILE SIDEBAR FUNCTIONS
+====================== */
+function toggleMobileSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggleBtn = document.getElementById('mobileMenuToggle');
+    
+    if (!sidebar) return;
+    
+    const isOpen = sidebar.classList.contains('open');
+    
+    if (isOpen) {
+        // Close sidebar
+        sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('active');
+        if (toggleBtn) toggleBtn.classList.remove('open');
+        document.body.style.overflow = '';
+    } else {
+        // Open sidebar
+        sidebar.classList.add('open');
+        if (overlay) overlay.classList.add('active');
+        if (toggleBtn) toggleBtn.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeMobileSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggleBtn = document.getElementById('mobileMenuToggle');
+    
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+    if (toggleBtn) toggleBtn.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function setupMobileSidebarEvents() {
+    // Mobile menu toggle button
+    const toggleBtn = document.getElementById('mobileMenuToggle');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleMobileSidebar();
+        });
+    }
+    
+    // Sidebar overlay - click to close
+    const overlay = document.getElementById('sidebarOverlay');
+    if (overlay) {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeMobileSidebar();
+            }
+        });
+    }
+    
+    // Close sidebar when a nav link is clicked (mobile only)
+    const navBtns = document.querySelectorAll('.nav-btn');
+    navBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar && sidebar.classList.contains('open')) {
+                setTimeout(closeMobileSidebar, 200);
+            }
+        });
+    });
+    
+    // Close sidebar on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeMobileSidebar();
+        }
+    });
+}
+
+function handleWindowResize() {
+    // If window is resized to desktop size, close mobile sidebar
+    if (window.innerWidth > 768) {
+        closeMobileSidebar();
+    }
+}
+
+/* ======================
    API HELPER FUNCTIONS
 ====================== */
 async function apiRequest(endpoint, options = {}) {
@@ -268,6 +352,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     applyTheme();
     
+    // Setup mobile sidebar events
+    setupMobileSidebarEvents();
+    window.addEventListener('resize', handleWindowResize);
+    
     const now = new Date();
     document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', {
         weekday: 'long', 
@@ -331,6 +419,9 @@ function showSection(id) {
     if (navButtons[btnIndex]) {
         navButtons[btnIndex].classList.add('active');
     }
+    
+    // Close mobile sidebar when changing sections
+    closeMobileSidebar();
     
     switch(id) {
         case 'dashboard':
@@ -1625,189 +1716,5 @@ function updateAllDisplays() {
     updateDashboard();
     updateAnalytics();
 }
-
-/* ======================
-   STYLES FOR NOTIFICATIONS
-====================== */
-const style = document.createElement('style');
-style.textContent = `
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 0.75rem 1.25rem;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    transform: translateX(120%);
-    transition: transform 0.3s ease;
-    z-index: 10000;
-    min-width: 280px;
-    max-width: 350px;
-    border-left: 4px solid #4361ee;
-    font-size: 0.875rem;
-    background: #ffffff !important;
-    color: #1a1a2e !important;
-    border: 1px solid #d0d0e0 !important;
-    opacity: 1 !important;
-}
-
-.notification.show {
-    transform: translateX(0);
-}
-
-.notification-success {
-    border-left-color: #10b981 !important;
-    background: #d1fae5 !important;
-    color: #065f46 !important;
-}
-
-.notification-success i {
-    color: #10b981 !important;
-}
-
-.notification-error {
-    border-left-color: #ef4444 !important;
-    background: #fee2e2 !important;
-    color: #991b1b !important;
-}
-
-.notification-error i {
-    color: #ef4444 !important;
-}
-
-.notification-info {
-    border-left-color: #3b82f6 !important;
-    background: #dbeafe !important;
-    color: #1e40af !important;
-}
-
-.notification-info i {
-    color: #3b82f6 !important;
-}
-
-.notification-warning {
-    border-left-color: #f59e0b !important;
-    background: #fef3c7 !important;
-    color: #92400e !important;
-}
-
-.notification-warning i {
-    color: #f59e0b !important;
-}
-
-/* Dark mode overrides */
-[data-theme="dark"] .notification {
-    background: #1e293b !important;
-    color: #f1f5f9 !important;
-    border: 1px solid #334155 !important;
-    opacity: 1 !important;
-}
-
-[data-theme="dark"] .notification-success {
-    background: #065f46 !important;
-    color: #d1fae5 !important;
-    border-left-color: #34d399 !important;
-}
-
-[data-theme="dark"] .notification-success i {
-    color: #34d399 !important;
-}
-
-[data-theme="dark"] .notification-error {
-    background: #7f1d1d !important;
-    color: #fecaca !important;
-    border-left-color: #f87171 !important;
-}
-
-[data-theme="dark"] .notification-error i {
-    color: #f87171 !important;
-}
-
-[data-theme="dark"] .notification-info {
-    background: #1e3a5f !important;
-    color: #bfdbfe !important;
-    border-left-color: #60a5fa !important;
-}
-
-[data-theme="dark"] .notification-info i {
-    color: #60a5fa !important;
-}
-
-[data-theme="dark"] .notification-warning {
-    background: #78350f !important;
-    color: #fef3c7 !important;
-    border-left-color: #fbbf24 !important;
-}
-
-[data-theme="dark"] .notification-warning i {
-    color: #fbbf24 !important;
-}
-
-.empty-state.small {
-    padding: 1.5rem;
-}
-
-.empty-state.small i {
-    font-size: 2rem;
-}
-
-.badge {
-    padding: 0.25rem 0.5rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    background: #f1f5f9;
-    color: #64748b;
-}
-
-.btn-sm {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.75rem;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-weight: 500;
-}
-
-.btn-sm.btn-success {
-    background: #10b981;
-    color: white;
-}
-
-.btn-sm.btn-success:hover {
-    background: #059669;
-}
-
-.btn-sm.btn-danger {
-    background: #ef4444;
-    color: white;
-}
-
-.btn-sm.btn-danger:hover {
-    background: #dc2626;
-}
-
-[data-theme="dark"] .btn-sm.btn-success {
-    background: #34d399;
-    color: #064e3b;
-}
-
-[data-theme="dark"] .btn-sm.btn-danger {
-    background: #f87171;
-    color: #7f1d1d;
-}
-
-[data-theme="dark"] .badge {
-    background: #334155;
-    color: #94a3b8;
-}
-`;
-document.head.appendChild(style);
 
 console.log('GameHub Manager fully loaded!');
