@@ -128,6 +128,721 @@ body {
   transition: background-color var(--transition-normal);
 }
 
+/* ===================================================================
+   MOBILE MENU TOGGLE
+   =================================================================== */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 1050;
+    background: var(--bg-sidebar);
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-md);
+    width: 44px;
+    height: 44px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-menu-toggle:hover {
+    transform: scale(1.05);
+    background: var(--primary);
+}
+
+.mobile-menu-toggle:active {
+    transform: scale(0.95);
+}
+
+.mobile-menu-toggle i {
+    transition: transform var(--transition-normal);
+}
+
+.mobile-menu-toggle.open i {
+    transform: rotate(90deg);
+}
+
+/* ===================================================================
+   SIDEBAR OVERLAY
+   =================================================================== */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1040;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* ===================================================================
+   SIDEBAR - Mobile Responsive
+   =================================================================== */
+@media (max-width: 768px) {
+    /* Show hamburger menu */
+    .mobile-menu-toggle {
+        display: flex !important;
+    }
+
+    /* Sidebar hidden by default on mobile */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        transform: translateX(-100%);
+        transition: transform var(--transition-normal);
+        z-index: 1050;
+        box-shadow: var(--shadow-xl);
+        padding: 1.25rem;
+        border-right: 1px solid var(--border-color);
+        border-radius: 0;
+        overflow-y: auto;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* Show text on mobile when open */
+    .sidebar.open .logo-text,
+    .sidebar.open .nav-text,
+    .sidebar.open .sidebar-footer .nav-text {
+        display: inline;
+    }
+
+    .sidebar.open .logo {
+        justify-content: flex-start;
+    }
+
+    .sidebar.open .logo i {
+        margin-right: 0.75rem;
+    }
+
+    .sidebar.open .nav-btn {
+        justify-content: flex-start;
+        padding: 0.75rem 1rem;
+    }
+
+    .sidebar.open .nav-btn i {
+        font-size: 1.1rem;
+        margin-right: 0.75rem;
+        width: 24px;
+    }
+
+    .sidebar.open .sidebar-footer .theme-toggle,
+    .sidebar.open .sidebar-footer .profile-btn,
+    .sidebar.open .sidebar-footer .logout-btn,
+    .sidebar.open .sidebar-footer .switch-account-btn {
+        justify-content: flex-start;
+        padding: 0.75rem 1rem;
+    }
+
+    .sidebar.open .sidebar-footer .theme-toggle i,
+    .sidebar.open .sidebar-footer .profile-btn i,
+    .sidebar.open .sidebar-footer .logout-btn i,
+    .sidebar.open .sidebar-footer .switch-account-btn i {
+        margin-right: 0.75rem;
+        width: 24px;
+    }
+
+    /* Show overlay when sidebar is open */
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    /* Main content adjustments */
+    .main {
+        margin-left: 0;
+        max-width: 100vw;
+        padding: var(--spacing-md);
+        padding-top: 4.5rem;
+    }
+
+    /* Header adjustments */
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+        padding-bottom: var(--spacing-md);
+    }
+
+    .header-left h1 {
+        font-size: var(--font-2xl);
+    }
+
+    .subtitle {
+        font-size: var(--font-sm);
+    }
+
+    .header-right {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        gap: 0.5rem;
+    }
+
+    .header-right .currency-selector {
+        width: 100%;
+    }
+
+    .header-right .currency-selector select {
+        width: 100%;
+    }
+
+    .header-right .date-display {
+        width: 100%;
+        text-align: center;
+    }
+
+    .header-right .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .stat-card {
+        padding: var(--spacing-md);
+        min-height: 80px;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .stat-value {
+        font-size: var(--font-xl);
+    }
+
+    .stat-label {
+        font-size: var(--font-xs);
+    }
+
+    /* Quick Stats */
+    .quick-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .quick-stat-card {
+        padding: 0.75rem 1rem;
+    }
+
+    .quick-value {
+        font-size: var(--font-base);
+    }
+
+    .quick-label {
+        font-size: var(--font-xs);
+    }
+
+    /* Bills Container */
+    .bills-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .bill-column {
+        padding: 1rem;
+    }
+
+    .bill-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .bill-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .bill-amount {
+        font-size: var(--font-base);
+    }
+
+    /* Devices Grid */
+    .devices-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .device-card {
+        padding: 1rem;
+    }
+
+    .device-details {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .device-session-info {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .device-actions {
+        flex-direction: column;
+    }
+
+    .device-actions .btn-success,
+    .device-actions .btn-danger {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Analytics */
+    .analytics-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .analytics-card {
+        padding: 1rem;
+        min-height: 250px;
+    }
+
+    .analytics-card.full-width {
+        min-height: 250px;
+    }
+
+    .analytics-card.half-width {
+        min-height: 250px;
+    }
+
+    .chart-wrapper {
+        height: 200px;
+    }
+
+    .analytics-card.full-width .chart-wrapper {
+        height: 220px;
+    }
+
+    /* Modals */
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        margin: 0.5rem;
+        max-height: 95vh;
+    }
+
+    .modal-header {
+        padding: 1rem;
+    }
+
+    .modal-header h3 {
+        font-size: var(--font-base);
+    }
+
+    .modal-body {
+        padding: 1rem;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .modal-actions .btn-secondary,
+    .modal-actions .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Bill Summary Modal */
+    .bill-summary-device {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .device-icon-large {
+        width: 48px;
+        height: 48px;
+        font-size: 1.5rem;
+    }
+
+    .bill-summary-device h2 {
+        font-size: var(--font-lg);
+    }
+
+    .bill-summary-actions {
+        flex-direction: column;
+    }
+
+    .bill-summary-actions .bill-action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .summary-row.highlight {
+        margin: 0 -0.5rem;
+        padding: 0.75rem 0.5rem;
+    }
+
+    .summary-value.amount {
+        font-size: var(--font-xl);
+    }
+
+    /* Section Headers */
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .section-header h2 {
+        font-size: var(--font-xl);
+    }
+
+    .section-header .header-right {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .section-header .header-right .btn-primary,
+    .section-header .header-right .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .total-display {
+        text-align: center;
+        padding: 0.5rem;
+        background: var(--bg-hover);
+        border-radius: var(--radius-md);
+    }
+
+    /* Profile Modal */
+    .actions-grid {
+        flex-direction: column;
+    }
+
+    .actions-grid .btn-secondary,
+    .actions-grid .btn-danger {
+        min-width: 100%;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .user-actions-section {
+        padding: var(--spacing-md);
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 1.5rem 0.5rem;
+    }
+
+    .empty-state i {
+        font-size: 2rem;
+    }
+
+    .empty-state p {
+        font-size: var(--font-sm);
+    }
+
+    /* Recent Activity */
+    .recent-activity {
+        padding: 1rem;
+    }
+
+    .activity-item {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .activity-info {
+        flex: 1 1 100%;
+    }
+
+    .activity-amount {
+        font-size: var(--font-base);
+    }
+}
+
+/* ===================================================================
+   VERY SMALL MOBILE (480px and below)
+   =================================================================== */
+@media (max-width: 480px) {
+    .main {
+        padding: 0.5rem;
+        padding-top: 4rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .stat-card {
+        padding: 0.5rem 0.75rem;
+        min-height: 70px;
+        gap: 0.5rem;
+    }
+
+    .stat-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+    }
+
+    .stat-value {
+        font-size: var(--font-base);
+    }
+
+    .stat-label {
+        font-size: 0.6rem;
+    }
+
+    .quick-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.35rem;
+    }
+
+    .quick-stat-card {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .quick-value {
+        font-size: var(--font-sm);
+    }
+
+    .quick-label {
+        font-size: 0.6rem;
+    }
+
+    .header-left h1 {
+        font-size: var(--font-xl);
+    }
+
+    .subtitle {
+        font-size: 0.75rem;
+    }
+
+    .date-display {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .currency-selector select {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.75rem;
+        padding-right: 2rem;
+    }
+
+    .chart-wrapper {
+        height: 160px;
+    }
+
+    .analytics-card.full-width .chart-wrapper {
+        height: 180px;
+    }
+
+    .analytics-card.half-width .chart-wrapper {
+        height: 160px;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+        padding: 0.5rem 0.75rem;
+        font-size: var(--font-sm);
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 0.5rem 0.75rem;
+        font-size: var(--font-sm);
+    }
+
+    .form-group label {
+        font-size: var(--font-xs);
+    }
+
+    .device-card {
+        padding: 0.75rem;
+    }
+
+    .device-details {
+        grid-template-columns: 1fr;
+    }
+
+    .device-header {
+        flex-wrap: wrap;
+    }
+
+    .device-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .device-info h3 {
+        font-size: var(--font-base);
+    }
+
+    .mobile-menu-toggle {
+        top: 0.5rem;
+        left: 0.5rem;
+        width: 38px;
+        height: 38px;
+        padding: 0.5rem;
+        font-size: 1rem;
+    }
+
+    /* Bill items */
+    .bill-item {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .bill-device {
+        font-size: var(--font-sm);
+    }
+
+    .bill-time {
+        font-size: 0.65rem;
+    }
+
+    .bill-amount {
+        font-size: var(--font-sm);
+    }
+
+    .bill-status-badge {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.5rem;
+    }
+
+    /* Modal on very small screens */
+    .modal-content {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+        max-height: 100vh;
+        height: 100vh;
+    }
+
+    .modal-header {
+        padding: 0.75rem;
+    }
+
+    .modal-body {
+        padding: 0.75rem;
+    }
+
+    .modal-actions .btn-secondary,
+    .modal-actions .btn-primary {
+        padding: 0.5rem;
+        font-size: var(--font-sm);
+        min-width: auto;
+    }
+
+    /* Bill Summary */
+    .bill-summary-modal .modal-content {
+        height: auto;
+        max-height: 95vh;
+        border-radius: var(--radius-lg);
+        margin: 0.5rem;
+    }
+
+    .bill-summary-device {
+        padding: 0.75rem;
+    }
+
+    .device-icon-large {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+    }
+
+    .bill-summary-details {
+        padding: 0.75rem 1rem;
+    }
+
+    .summary-row {
+        padding: 0.5rem 0;
+        font-size: var(--font-sm);
+    }
+
+    .summary-value.amount {
+        font-size: var(--font-lg);
+    }
+
+    /* Notification */
+    .notification {
+        min-width: auto;
+        max-width: calc(100vw - 1rem);
+        right: 0.5rem;
+        top: 0.5rem;
+        font-size: var(--font-xs);
+        padding: 0.4rem 0.75rem;
+    }
+
+    .message {
+        right: 0.5rem;
+        top: 0.5rem;
+        font-size: var(--font-xs);
+        padding: 0.4rem 0.75rem;
+        max-width: calc(100vw - 1rem);
+    }
+
+    /* Expenses table */
+    .expense-table table {
+        font-size: 0.75rem;
+        min-width: 350px;
+    }
+
+    .expense-table th,
+    .expense-table td {
+        padding: 0.3rem 0.5rem;
+    }
+
+    /* Empty state */
+    .empty-state {
+        padding: 1rem 0.25rem;
+    }
+
+    .empty-state i {
+        font-size: 1.5rem;
+    }
+
+    .empty-state h3 {
+        font-size: var(--font-base);
+    }
+
+    .empty-state p {
+        font-size: var(--font-xs);
+    }
+}
+
 /* ================= SIDEBAR ================= */
 .sidebar {
   width: 260px;
